@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stephanie Hamel | Systems Architect</title>
+    <link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a1a;
+            --paper: #f8f6f2;
+            --accent: #c45d3e;
+            --accent-light: #e8d5cf;
+            --muted: #666;
+            --border: #ddd;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Hero Section */
+        .hero {
+            min-height: 70vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            padding: 4rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .hero-content {
+            display: flex;
+            align-items: center;
+            gap: 3rem;
+        }
+
+        .hero-photo {
+            width: 180px;
+            height: 180px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 4px solid var(--accent-light);
+            flex-shrink: 0;
+        }
+
+        .hero-text {
+            flex: 1;
+        }
+
+        @media (max-width: 768px) {
+            .hero-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            .hero-photo {
+                width: 150px;
+                height: 150px;
+            }
+        }
+
+        .hero-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .hero h1 {
+            font-family: 'Instrument Serif', serif;
+            font-size: clamp(2.5rem, 6vw, 4.5rem);
+            font-weight: 400;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+        }
+
+        .hero h1 em {
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        .hero-intro {
+            font-size: 1.25rem;
+            color: var(--muted);
+            max-width: 700px;
+            margin-bottom: 2rem;
+        }
+
+        .hero-tagline {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.5rem;
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        /* Domain Map Section */
+        .domains {
+            padding: 5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: baseline;
+            margin-bottom: 3rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .section-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: 2rem;
+            font-weight: 400;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 0.9rem;
+        }
+
+        .domain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .domain-card {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .domain-card:hover {
+            border-color: var(--accent);
+            transform: translateY(-4px);
+            box-shadow: 0 12px 24px rgba(0,0,0,0.06);
+        }
+
+        .domain-label {
+            font-size: 0.7rem;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .domain-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.35rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .domain-desc {
+            font-size: 0.9rem;
+            color: var(--muted);
+            line-height: 1.5;
+        }
+
+        .domain-year {
+            position: absolute;
+            top: 1.5rem;
+            right: 1.5rem;
+            font-size: 0.75rem;
+            color: var(--muted);
+        }
+
+        /* Network Section */
+        .network {
+            padding: 5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .network-visual {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.75rem;
+            margin-top: 2rem;
+        }
+
+        .network-node {
+            padding: 0.6rem 1.2rem;
+            background: white;
+            border: 1px solid var(--border);
+            font-size: 0.85rem;
+            transition: all 0.2s ease;
+            cursor: default;
+        }
+
+        .network-node:hover {
+            background: var(--accent-light);
+            border-color: var(--accent);
+        }
+
+        .network-node.highlight {
+            background: var(--accent);
+            color: white;
+            border-color: var(--accent);
+        }
+
+        /* Roots Section */
+        .roots {
+            padding: 5rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .roots-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: start;
+        }
+
+        @media (max-width: 768px) {
+            .roots-content {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+        }
+
+        .roots-text {
+            font-size: 1.1rem;
+            line-height: 1.8;
+        }
+
+        .roots-text p {
+            margin-bottom: 1.5rem;
+        }
+
+        .roots-sidebar {
+            background: white;
+            border: 1px solid var(--border);
+            padding: 2rem;
+        }
+
+        .sidebar-title {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.25rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .credential-list {
+            list-style: none;
+        }
+
+        .credential-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.9rem;
+        }
+
+        .credential-list li:last-child {
+            border-bottom: none;
+        }
+
+        .credential-list .label {
+            color: var(--muted);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Now Section */
+        .now {
+            padding: 5rem 0;
+            background: var(--ink);
+            color: var(--paper);
+        }
+
+        .now .container {
+            max-width: 800px;
+        }
+
+        .now-label {
+            font-size: 0.75rem;
+            letter-spacing: 0.15em;
+            text-transform: uppercase;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .now h2 {
+            font-family: 'Instrument Serif', serif;
+            font-size: 2.5rem;
+            font-weight: 400;
+            margin-bottom: 1.5rem;
+        }
+
+        .now-text {
+            font-size: 1.15rem;
+            line-height: 1.8;
+            opacity: 0.85;
+            margin-bottom: 2rem;
+        }
+
+        .now-tagline {
+            font-family: 'Instrument Serif', serif;
+            font-size: 1.75rem;
+            font-style: italic;
+            color: var(--accent);
+        }
+
+        /* Footer */
+        .footer {
+            padding: 3rem 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .footer a:hover {
+            text-decoration: underline;
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            animation: fadeUp 0.6s ease forwards;
+        }
+
+        .animate-delay-1 { animation-delay: 0.1s; opacity: 0; }
+        .animate-delay-2 { animation-delay: 0.2s; opacity: 0; }
+        .animate-delay-3 { animation-delay: 0.3s; opacity: 0; }
+    </style>
+</head>
+<body>
+
+<section class="hero">
+    <div class="container">
+        <div class="hero-content">
+            <img src="stephanie_photo.jpg" alt="Stephanie Hamel" class="hero-photo animate">
+            <div class="hero-text">
+                <p class="hero-label animate">Systems Architect</p>
+                <h1 class="animate animate-delay-1">Building across sectors.<br>Higher ed. Government. Nonprofits. <em>Now tech.</em></h1>
+                <p class="hero-intro animate animate-delay-2">26+ years designing civic engagement infrastructure, training international leaders, architecting theory of change for global networks, and integrating futures thinking into organizational practice.</p>
+                <p class="hero-tagline animate animate-delay-3">Founder & CEO, Kincraft</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="domains">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Where I've Built</h2>
+            <p class="section-subtitle">Selected projects across domains</p>
+        </div>
+        
+        <div class="domain-grid">
+            <div class="domain-card">
+                <span class="domain-year">1992–2017</span>
+                <p class="domain-label">Government & Policy</p>
+                <h3 class="domain-title">U.S. State Department & California Government</h3>
+                <p class="domain-desc">Designed civic engagement curriculum for student leaders from 13 Muslim-majority countries (MENA Program). Ran internal communications between CA State Dept of Social Services and 58 County DA Offices.</p>
+            </div>
+
+            <div class="domain-card">
+                <span class="domain-year">2015–Present</span>
+                <p class="domain-label">Global Social Change</p>
+                <h3 class="domain-title">World Pulse Theory of Change</h3>
+                <p class="domain-desc">Consulted with transnational feminist network (190+ countries) to architect their impact framework and articulate their theory of change. Published research on postcolonial reflexivity in organizational practice.</p>
+            </div>
+
+            <div class="domain-card">
+                <span class="domain-year">2019–Present</span>
+                <p class="domain-label">Tech & AI Ethics</p>
+                <h3 class="domain-title">Indigenous Protocol for AI</h3>
+                <p class="domain-desc">Research interests include applying indigenous wisdom to ethical AI development. Examining how materiality grounds AI vision while ensuring equitable outcomes across industries and societies.</p>
+            </div>
+
+            <div class="domain-card">
+                <span class="domain-year">2019–Present</span>
+                <p class="domain-label">Futures Thinking</p>
+                <h3 class="domain-title">Stanford / Institute for the Future</h3>
+                <p class="domain-desc">Trained in futures thinking through Stanford University and IFTF. Integrates signals analysis, scenario planning, and foresight frameworks into curriculum. Consulted with IFTF leadership on educational applications of futures methodologies.</p>
+            </div>
+
+            <div class="domain-card">
+                <span class="domain-year">2015–Present</span>
+                <p class="domain-label">Crisis, Health & Community Resilience</p>
+                <h3 class="domain-title">From Wildfires to Pandemics</h3>
+                <p class="domain-desc">Published research on health communication (managed care impact) and crisis response (Valley Fire, Camp Fire—methodology featured on 60 Minutes). Johns Hopkins certified in contact tracing; designed pandemic interviewing curriculum. Studies volunteerism, nonprofit mobilization, and how communities build resilience under systemic stress.</p>
+            </div>
+
+            <div class="domain-card">
+                <span class="domain-year">2015</span>
+                <p class="domain-label">Culture & Heritage</p>
+                <h3 class="domain-title">Transnational Feminist Networks</h3>
+                <p class="domain-desc">Published in Journal of International & Intercultural Communication on postcolonial reflexivity in organizational practice. Research on how inter/cultural partnerships traverse geographic boundaries and re-imagine voice, identity, and organizational structures.</p>
+            </div>
+
+            <div class="domain-card">
+                <span class="domain-year">2017</span>
+                <p class="domain-label">Research Methods Innovation</p>
+                <h3 class="domain-title">Feminist Online Interviewing</h3>
+                <p class="domain-desc">Published in Feminist Review. Developed new methodology for reflexive email interviewing with international participants across multiple languages. 319+ citations.</p>
+            </div>
+
+            <div class="domain-card">
+                <span class="domain-year">Ongoing</span>
+                <p class="domain-label">Leadership & Generational Dynamics</p>
+                <h3 class="domain-title">Dissent and the Generational Divide</h3>
+                <p class="domain-desc">Popular book chapter examining millennial attitudes toward dissent and implications for leadership. Research on how parenting, education, and technology shape the next generation of leaders in workplace, community, and political contexts.</p>
+            </div>
+
+            <div class="domain-card">
+                <span class="domain-year">1990s–2000s</span>
+                <p class="domain-label">Tech Industry Research</p>
+                <h3 class="domain-title">Dell, Hewlett Packard & WITI</h3>
+                <p class="domain-desc">Research design at UT Austin for Dell Technologies and Hewlett Packard. Published research on career barriers to women's advancement in tech for Women in Technology International (WITI).</p>
+            </div>
+
+            <div class="domain-card">
+                <span class="domain-year">Ongoing</span>
+                <p class="domain-label">Innovation & Creativity</p>
+                <h3 class="domain-title">Business Incubators & Knowledge Work</h3>
+                <p class="domain-desc">Published research on innovation ecosystems, business incubation processes, and knowledge work. Examining how organizations foster creativity and build capacity for change.</p>
+            </div>
+
+            <div class="domain-card">
+                <span class="domain-year">2012</span>
+                <p class="domain-label">Policy & Education Advocacy</p>
+                <h3 class="domain-title">California Blueprint for Public Schools</h3>
+                <p class="domain-desc">Designed and led IRB-approved study giving voice to 120 high school students at low-income schools—excluded from the official process. 32-page report presented to California State Board of Education and Superintendent Torlakson.</p>
+            </div>
+
+            <div class="domain-card">
+                <span class="domain-year">Ongoing</span>
+                <p class="domain-label">Design Thinking & UX</p>
+                <h3 class="domain-title">Stanford d.school Methodology</h3>
+                <p class="domain-desc">Teaches Stanford d.school design thinking bootcamp each semester. Skilled in UX/UI design principles and participatory research methods. Integrates human-centered design into curriculum and consulting work.</p>
+            </div>
+
+            <div class="domain-card">
+                <span class="domain-year">Ongoing</span>
+                <p class="domain-label">Civic Engagement & Capacity Building</p>
+                <h3 class="domain-title">Agents of Change</h3>
+                <p class="domain-desc">Designed Agents of Change Honors Program course. Led hundreds of students through Poverty Simulations, Great Debate Civic Expos (city-university partnership), and First Year Experience events. Built civic engagement curriculum thread for Honors program. Research on nonprofit sector health and what it means to live a civically engaged life.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="network">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Networks & Ecosystems</h2>
+            <p class="section-subtitle">Communities I'm connected to</p>
+        </div>
+        
+        <div class="network-visual">
+            <span class="network-node">U.S. State Department</span>
+            <span class="network-node">CA State Dept of Social Services</span>
+            <span class="network-node highlight">World Pulse Global Network</span>
+            <span class="network-node highlight">Institute for the Future</span>
+            <span class="network-node">CSU System</span>
+            <span class="network-node highlight">Indigenous AI Ethics</span>
+            <span class="network-node highlight">EdTech Leaders</span>
+            <span class="network-node highlight">Stanford d.school</span>
+            <span class="network-node">Dell Technologies</span>
+            <span class="network-node">Hewlett Packard</span>
+            <span class="network-node">Women in Technology International</span>
+            <span class="network-node">Crisis Communication Experts</span>
+            <span class="network-node">Transnational Feminist Networks</span>
+            <span class="network-node">Social Entrepreneurs</span>
+            <span class="network-node highlight">Maker Community</span>
+            <span class="network-node highlight">Heritage Craft Practitioners</span>
+            <span class="network-node highlight">Museums & Cultural Institutions</span>
+            <span class="network-node highlight">Climate Action Networks</span>
+        </div>
+    </div>
+</section>
+
+<section class="roots">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Roots</h2>
+        </div>
+        
+        <div class="roots-content">
+            <div class="roots-text">
+                <p>My roots in Northern California run deep—before California became a state. Two of my ancestors stood among the thirty 'Bears' who raised the first Bear flag and worked closely with General Vallejo from Mexico on a nonviolent transition.</p>
+                <p>That heritage grounds my commitment to community, land, and story. As a sixth-generation Californian I have long ties to Sonoma, Napa, Lake, and Butte Counties. That long view informs how I build—Kincraft is designed with the Indigenous seventh-generation principle in mind: decisions made for those who come after.</p>
+                <p>I'm also a social scientist who studies how humans organize—in the workplace, following crises, and for social change. That research led me to futures thinking, to AI ethics, to transnational feminist networks, and now to Kincraft.</p>
+            </div>
+            
+            <div class="roots-sidebar">
+                <h3 class="sidebar-title">Credentials</h3>
+                <ul class="credential-list">
+                    <li>
+                        <span class="label">Education</span>
+                        BA, Journalism<br>
+                        MA, Human Communication<br>
+                        PhD, Organizational Communication, University of Texas at Austin
+                    </li>
+                    <li>
+                        <span class="label">Training</span>
+                        Futures Thinking, Stanford University; Design Thinking, Stanford d.school
+                    </li>
+                    <li>
+                        <span class="label">Skills</span>
+                        UX/UI Design, Facilitation, Qualitative Research Methods
+                    </li>
+                    <li>
+                        <span class="label">Recognition</span>
+                        Awarded for Research & Diversity & Inclusion Teaching Excellence
+                    </li>
+                    <li>
+                        <span class="label">Research Impact</span>
+                        Awarded Top Research Papers by the International, National, and Central States Communication Associations
+                    </li>
+                    <li>
+                        <span class="label">Publications</span>
+                        Journal of Technology Transfer, Journal of International & Intercultural Communication, Feminist Review, Management Communication Quarterly, and more
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="now">
+    <div class="container">
+        <p class="now-label">Now Building</p>
+        <h2>Kincraft</h2>
+        <p class="now-text">A platform of craft heritage-inspired digital tools that solve real problems makers face. From pattern creation to futures thinking, Kincraft is a movement to build capacity and community for makers everywhere.</p>
+        <p class="now-text">Mission-locked Public Benefit Corporation amplifying endangered artisan collectives and climate initiatives that serve maker communities.</p>
+        <p class="now-tagline">Crafting the future. One maker at a time.</p>
+    </div>
+</section>
+
+<footer class="footer">
+    <div class="container">
+        <p>Open to conversations with mission-aligned investors, institutional partners, and anyone building at the intersection of craft, culture, and climate.</p>
+        <p style="margin-top: 1rem;"><a href="https://linkedin.com/in/stephaniehameltellsdatastories">LinkedIn</a></p>
+    </div>
+</footer>
+
+</body>
+</html>

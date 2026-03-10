@@ -1,0 +1,495 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stephanie Hamel | Knowledge Atlas</title>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a1a;
+            --paper: #fafaf8;
+            --accent: #2d5a45;
+            --accent-light: #e8f0ec;
+            --warm: #8b7355;
+            --warm-light: #f5f0eb;
+            --muted: #6b6b6b;
+            --border: #e0e0e0;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Header */
+        header {
+            padding: 4rem 0 3rem;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            gap: 2rem;
+        }
+
+        .header-photo {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 3px solid var(--accent-light);
+            flex-shrink: 0;
+        }
+
+        .header-main {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            flex: 1;
+        }
+
+        .header-main h1 {
+            font-family: 'Source Serif Pro', Georgia, serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .header-main .subtitle {
+            font-size: 1.1rem;
+            color: var(--muted);
+            max-width: 500px;
+        }
+
+        .header-aside {
+            text-align: right;
+            font-size: 0.9rem;
+            color: var(--muted);
+        }
+
+        .header-aside a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* Intro */
+        .intro {
+            padding: 3rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .intro-text {
+            font-family: 'Source Serif Pro', Georgia, serif;
+            font-size: 1.25rem;
+            max-width: 800px;
+            color: var(--ink);
+        }
+
+        .intro-text strong {
+            color: var(--accent);
+        }
+
+        /* Purpose statement */
+        .purpose {
+            background: var(--accent-light);
+            padding: 2rem 0;
+            margin: 2rem 0;
+            border-radius: 4px;
+        }
+
+        .purpose-content {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .purpose-icon {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .purpose-text {
+            font-size: 1rem;
+        }
+
+        .purpose-text strong {
+            display: block;
+            font-size: 1.1rem;
+            margin-bottom: 0.25rem;
+        }
+
+        /* Knowledge Domains */
+        .domains {
+            padding: 3rem 0;
+        }
+
+        .section-header {
+            margin-bottom: 2rem;
+        }
+
+        .section-title {
+            font-family: 'Source Serif Pro', Georgia, serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .section-subtitle {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .domain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .domain-card {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            transition: all 0.2s ease;
+        }
+
+        .domain-card:hover {
+            border-color: var(--accent);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        }
+
+        .domain-name {
+            font-family: 'Source Serif Pro', Georgia, serif;
+            font-size: 1.15rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--ink);
+        }
+
+        .domain-understand {
+            font-size: 0.9rem;
+            color: var(--ink);
+            margin-bottom: 1rem;
+            line-height: 1.5;
+        }
+
+        .domain-kincraft {
+            font-size: 0.85rem;
+            color: var(--accent);
+            background: var(--accent-light);
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+            margin-bottom: 0.75rem;
+        }
+
+        .domain-kincraft::before {
+            content: "→ Kincraft: ";
+            font-weight: 600;
+        }
+
+        .domain-collab {
+            font-size: 0.85rem;
+            color: var(--muted);
+            font-style: italic;
+        }
+
+        /* Kincraft Section */
+        .kincraft-section {
+            background: var(--warm-light);
+            padding: 3rem 0;
+            margin: 2rem 0;
+        }
+
+        .kincraft-content {
+            max-width: 700px;
+        }
+
+        .kincraft-label {
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.75rem;
+            color: var(--warm);
+            margin-bottom: 0.5rem;
+        }
+
+        .kincraft-title {
+            font-family: 'Source Serif Pro', Georgia, serif;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .kincraft-text {
+            font-size: 1rem;
+            margin-bottom: 1rem;
+            color: var(--ink);
+        }
+
+        .kincraft-tagline {
+            font-family: 'Source Serif Pro', Georgia, serif;
+            font-size: 1.25rem;
+            color: var(--warm);
+            margin-top: 1.5rem;
+        }
+
+        /* Collaboration CTA */
+        .collab-cta {
+            padding: 3rem 0;
+            text-align: center;
+            border-top: 1px solid var(--border);
+        }
+
+        .collab-title {
+            font-family: 'Source Serif Pro', Georgia, serif;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .collab-text {
+            color: var(--muted);
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+
+        .collab-link {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 0.75rem 1.5rem;
+            border-radius: 4px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+
+        .collab-link:hover {
+            background: #234a38;
+        }
+
+        /* Footer */
+        footer {
+            padding: 2rem 0;
+            text-align: center;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+            }
+            
+            .header-aside {
+                text-align: left;
+            }
+            
+            .header-main h1 {
+                font-size: 2rem;
+            }
+
+            .purpose-content {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .domain-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="header-main">
+                <img src="stephanie_photo.jpg" alt="Stephanie Hamel" class="header-photo">
+                <div>
+                    <h1>Stephanie Hamel</h1>
+                    <p class="subtitle">A map of where my interests and expertise lie—and where our work might intersect.</p>
+                </div>
+            </div>
+            <div class="header-aside">
+                <p>Founder & CEO, Kincraft</p>
+                <p><a href="https://linkedin.com/in/stephaniehameltellsdatastories">LinkedIn →</a></p>
+            </div>
+        </div>
+    </div>
+</header>
+
+<section class="intro">
+    <div class="container">
+        <p class="intro-text">
+            I'm a systems thinker who has spent 25+ years studying <strong>how humans organize</strong>—in workplaces, during crises, across borders, and for social change. That work took me through government, higher education, nonprofits, and now tech. Each domain added layers of understanding that now inform what I'm building.
+        </p>
+    </div>
+</section>
+
+<div class="purpose">
+    <div class="container">
+        <div class="purpose-content">
+            <div class="purpose-icon">◉</div>
+            <div class="purpose-text">
+                <strong>Why a Knowledge Atlas?</strong>
+                This isn't a resume. It's a resource for finding overlap. If you see a domain where you're also working, let's talk. The best collaborations happen at the edges of expertise.
+            </div>
+        </div>
+    </div>
+</div>
+
+<section class="domains">
+    <div class="container">
+        <div class="section-header">
+            <h2 class="section-title">Knowledge Domains</h2>
+            <p class="section-subtitle">Areas where I have depth—and where Kincraft draws from</p>
+        </div>
+
+        <div class="domain-grid">
+            <div class="domain-card">
+                <h3 class="domain-name">Organizational Communication</h3>
+                <p class="domain-understand">How organizations communicate internally and externally. How they change, adapt, and fail to adapt. The gap between what institutions say and what they do. Academic path: BA in Journalism, MA in Human Communication, PhD in Organizational Communication.</p>
+                <p class="domain-kincraft">Building a Public Benefit Corporation (PBC) where mission is legally locked to amplify cultural preservation and climate initiatives.</p>
+                <p class="domain-collab">If you study organizational change, mission-driven structures, strategic communication, or benefit corporations, let's connect.</p>
+            </div>
+
+            <div class="domain-card">
+                <h3 class="domain-name">Global Social Change</h3>
+                <p class="domain-understand">Transnational feminist networks and how movements scale across borders. Consulted with World Pulse (190+ countries) to architect their theory of change and impact framework. Published research on postcolonial reflexivity in organizational practice.</p>
+                <p class="domain-kincraft">Kincraft connects makers globally to heritage traditions across borders. The Cultural Regeneration Fund supports artisan communities worldwide.</p>
+                <p class="domain-collab">If you work on global movements, transnational networks, or international development with a gender lens, let's connect.</p>
+            </div>
+
+            <div class="domain-card">
+                <h3 class="domain-name">Crisis & Community Resilience</h3>
+                <p class="domain-understand">How communities respond to systemic stress—wildfires, pandemics, health system failures. What makes some communities bounce back while others don't. Artisan communities preserve land-based knowledge essential for climate adaptation.</p>
+                <p class="domain-kincraft">Artisan communities are on the front lines of climate change. Kincraft's Cultural Regeneration Fund prioritizes their resilience, land stewardship, and climate adaptation.</p>
+                <p class="domain-collab">If you work on community resilience, climate adaptation, land stewardship, or disaster recovery, I'd like to learn from you.</p>
+            </div>
+
+            <div class="domain-card">
+                <h3 class="domain-name">Nonprofit Sector Health</h3>
+                <p class="domain-understand">What makes the nonprofit sector sustainable—or fragile. Volunteerism, managed care impacts, and how mission-driven organizations maintain health over time.</p>
+                <p class="domain-kincraft">Kincraft partners with cultural nonprofits and artisan collectives. Understanding sector health shapes how we structure those relationships.</p>
+                <p class="domain-collab">If you research or lead mission-driven organizations, let's compare notes.</p>
+            </div>
+
+            <div class="domain-card">
+                <h3 class="domain-name">Futures Thinking & Foresight</h3>
+                <p class="domain-understand">Signals analysis, scenario planning, and how to make decisions for conditions that don't yet exist. Trained through Stanford and the Institute for the Future (IFTF).</p>
+                <p class="domain-kincraft">We're bringing futures thinking tools and forecasting tools to makers and designers.</p>
+                <p class="domain-collab">If you're building foresight tools or teaching futures methods, I'm interested.</p>
+            </div>
+
+            <div class="domain-card">
+                <h3 class="domain-name">Human-Centered Design</h3>
+                <p class="domain-understand">Stanford d.school methodology. UX/UI principles. Participatory research that centers the people being designed for, not just the designers.</p>
+                <p class="domain-kincraft">Every Kincraft feature starts with maker needs. Pattern Passport emerged from asking: what do makers actually want to know about heritage?</p>
+                <p class="domain-collab">If you practice design thinking or UX research, especially in social impact, let's talk.</p>
+            </div>
+
+            <div class="domain-card">
+                <h3 class="domain-name">Civic Capacity Building</h3>
+                <p class="domain-understand">What it means to live a civically engaged life. How to build systems that create engaged citizens at scale—not just inform them, but activate them.</p>
+                <p class="domain-kincraft">Kincraft's mission test: "Does this make makers more capable of affecting the change they want to see?"</p>
+                <p class="domain-collab">If you build civic infrastructure or study political participation, I want to learn from your work.</p>
+            </div>
+
+            <div class="domain-card">
+                <h3 class="domain-name">Cultural Heritage & Attribution</h3>
+                <p class="domain-understand">Indigenous protocols. Postcolonial reflexivity. The difference between appreciation and appropriation. How to represent cultural knowledge with consent and respect. Artisan craft traditions are tied to the land—natural intelligence passed down through generations.</p>
+                <p class="domain-kincraft">We are building Kincraft to provide cultural attribution, land acknowledgment, and climate data for land stewardship for every design—connecting makers to artisan communities and heritage traditions as well as climate data and initiatives near them.</p>
+                <p class="domain-collab">If you work on cultural preservation, indigenous rights, land stewardship, or ethical representation, this is core to what we're building.</p>
+            </div>
+
+            <div class="domain-card">
+                <h3 class="domain-name">Qualitative & Feminist Methods</h3>
+                <p class="domain-understand">Online interviewing methodology. Reflexivity in research. How to give voice to people typically excluded from research processes. Consulted with World Pulse (190+ countries) on transnational feminist network impact frameworks.</p>
+                <p class="domain-kincraft">User research for Kincraft follows these principles—centering maker voices, not just our assumptions about what makers need.</p>
+                <p class="domain-collab">If you develop research methods, study voice/representation in research, or work with transnational feminist networks, let's exchange ideas.</p>
+            </div>
+
+            <div class="domain-card">
+                <h3 class="domain-name">Technology & Society</h3>
+                <p class="domain-understand">AI ethics and safety. Women's barriers in tech. How technology reshapes work, identity, and power. The difference between tech that extracts and tech that regenerates. Gold standards for child safety baked in before the build begins.</p>
+                <p class="domain-kincraft">Kincraft is explicitly non-extractive—we don't optimize for engagement, we don't use dark patterns, we measure offline connection.</p>
+                <p class="domain-collab">If you work on ethical tech, responsible AI, or tech policy, I'd value your perspective.</p>
+            </div>
+
+            <div class="domain-card">
+                <h3 class="domain-name">Innovation Ecosystems</h3>
+                <p class="domain-understand">How business incubators work. Knowledge work and creativity. What environments foster innovation—and what kills it.</p>
+                <p class="domain-kincraft">We are building infrastructure for a maker ecosystem—not just an app, but tools, education, and community that reinforce each other.</p>
+                <p class="domain-collab">If you study or build innovation infrastructure, especially outside traditional tech hubs, let's connect.</p>
+            </div>
+
+            <div class="domain-card">
+                <h3 class="domain-name">Policy & Inclusive Design</h3>
+                <p class="domain-understand">How to center excluded voices in policy processes. Research design that surfaces what decision-makers miss. Presenting findings to power.</p>
+                <p class="domain-kincraft">EdTech partnerships will bring Kincraft into schools—navigating education policy and curriculum standards while building to the gold standard for child safety, security, and offline motivation.</p>
+                <p class="domain-collab">If you work on education policy or inclusive policy design, we may have synergies.</p>
+            </div>
+
+            <div class="domain-card">
+                <h3 class="domain-name">Generational Dynamics</h3>
+                <p class="domain-understand">How parenting, education, and technology shape each generation's approach to dissent, leadership, and change. What motivates Gen Z differently.</p>
+                <p class="domain-kincraft">Kincraft is built for Gen Z makers who want meaning beyond consumption—tools to create the world they want to live in.</p>
+                <p class="domain-collab">If you study generational change or build for younger audiences with depth, let's compare approaches.</p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section class="kincraft-section">
+    <div class="container">
+        <div class="kincraft-content">
+            <p class="kincraft-label">Where It All Converges</p>
+            <h2 class="kincraft-title">Kincraft</h2>
+            <p class="kincraft-text">A platform of craft heritage-inspired digital tools that solve real problems makers face. From pattern creation to futures thinking, Kincraft is a movement to build capacity and community for makers everywhere.</p>
+            <p class="kincraft-text">Mission-locked Public Benefit Corporation amplifying endangered artisan collectives and climate initiatives that serve maker communities.</p>
+            <p class="kincraft-text">As a sixth-generation Californian, I build with the Indigenous seventh-generation principle in mind: decisions made for those who come after.</p>
+            <p class="kincraft-tagline">Crafting the future. One maker at a time.</p>
+        </div>
+    </div>
+</section>
+
+<section class="collab-cta">
+    <div class="container">
+        <h2 class="collab-title">Find Overlap?</h2>
+        <p class="collab-text">If any of these domains intersect with your work—as an investor, researcher, partner, or builder—I'd welcome a conversation.</p>
+        <a href="https://linkedin.com/in/stephaniehameltellsdatastories" class="collab-link">Connect on LinkedIn</a>
+    </div>
+</section>
+
+<footer>
+    <div class="container">
+        <p>Stephanie Hamel · Founder & CEO, Kincraft</p>
+        <p style="margin-top: 0.5rem;"><a href="https://linkedin.com/in/stephaniehameltellsdatastories">linkedin.com/in/stephaniehameltellsdatastories</a></p>
+    </div>
+</footer>
+
+</body>
+</html>

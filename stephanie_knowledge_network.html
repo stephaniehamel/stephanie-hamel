@@ -1,0 +1,1074 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stephanie Hamel | Knowledge Network</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.8.5/d3.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Source+Serif+Pro:wght@400;600&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --ink: #1a1a1a;
+            --paper: #fafaf8;
+            --accent: #2d5a45;
+            --accent-light: #e8f0ec;
+            --warm: #8b7355;
+            --warm-light: #f5f0eb;
+            --muted: #6b6b6b;
+            --border: #e0e0e0;
+            --highlight: #e85d04;
+            --core: #2d5a45;
+            --supporting: #a8c5b8;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--paper);
+            color: var(--ink);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        header {
+            padding: 2rem 0;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-photo {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-light);
+        }
+
+        h1 {
+            font-family: 'Source Serif Pro', Georgia, serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+        }
+
+        .subtitle {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        /* Controls */
+        .controls-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.75rem;
+            align-items: flex-end;
+        }
+
+        .search-container {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .search-input {
+            padding: 0.6rem 1rem;
+            border: 1px solid var(--border);
+            border-radius: 6px;
+            font-size: 0.95rem;
+            width: 280px;
+            font-family: inherit;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent);
+        }
+
+        .search-input::placeholder {
+            color: #aaa;
+        }
+
+        .clear-btn {
+            padding: 0.6rem 1rem;
+            background: var(--border);
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .clear-btn:hover {
+            background: #d0d0d0;
+        }
+
+        /* Toggle */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .toggle-label {
+            font-size: 0.85rem;
+            color: var(--muted);
+        }
+
+        .toggle-switch {
+            position: relative;
+            width: 48px;
+            height: 26px;
+            background: var(--border);
+            border-radius: 13px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 3px;
+            left: 3px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.2s;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(22px);
+        }
+
+        .toggle-status {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--accent);
+            min-width: 100px;
+        }
+
+        /* Main layout */
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 380px;
+            gap: 2rem;
+            padding: 2rem 0;
+            min-height: calc(100vh - 150px);
+        }
+
+        /* Network */
+        .network-container {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #network {
+            width: 100%;
+            height: 600px;
+        }
+
+        .network-instructions {
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+            background: rgba(255,255,255,0.9);
+            padding: 0.5rem 0.75rem;
+            border-radius: 4px;
+        }
+
+        /* Detail panel */
+        .detail-panel {
+            background: white;
+            border: 1px solid var(--border);
+            border-radius: 12px;
+            padding: 1.5rem;
+            height: fit-content;
+            position: sticky;
+            top: 2rem;
+        }
+
+        .detail-empty {
+            text-align: center;
+            padding: 3rem 1rem;
+            color: var(--muted);
+        }
+
+        .detail-empty-icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            opacity: 0.3;
+        }
+
+        .detail-content {
+            display: none;
+        }
+
+        .detail-content.active {
+            display: block;
+        }
+
+        .detail-header {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .detail-label {
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            font-size: 0.7rem;
+            color: var(--accent);
+        }
+
+        .core-badge {
+            background: var(--accent);
+            color: white;
+            font-size: 0.65rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .detail-title {
+            font-family: 'Source Serif Pro', Georgia, serif;
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            line-height: 1.3;
+        }
+
+        .detail-section {
+            margin-bottom: 1.25rem;
+        }
+
+        .detail-section-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--muted);
+            margin-bottom: 0.5rem;
+        }
+
+        .detail-text {
+            font-size: 0.9rem;
+            line-height: 1.6;
+            color: var(--ink);
+        }
+
+        .detail-kincraft {
+            background: var(--accent-light);
+            padding: 0.75rem;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: var(--accent);
+        }
+
+        .detail-collab {
+            font-style: italic;
+            color: var(--muted);
+            font-size: 0.85rem;
+        }
+
+        .connected-nodes {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.4rem;
+            margin-top: 0.5rem;
+        }
+
+        .connected-tag {
+            background: var(--warm-light);
+            color: var(--warm);
+            padding: 0.25rem 0.6rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .connected-tag:hover {
+            background: var(--warm);
+            color: white;
+        }
+
+        .connected-tag.core {
+            background: var(--accent-light);
+            color: var(--accent);
+        }
+
+        .connected-tag.core:hover {
+            background: var(--accent);
+            color: white;
+        }
+
+        /* Legend */
+        .legend {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .legend-title {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--muted);
+            margin-bottom: 0.75rem;
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+            color: var(--muted);
+            margin-bottom: 0.4rem;
+        }
+
+        .legend-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .legend-dot.core {
+            background: var(--core);
+        }
+
+        .legend-dot.supporting {
+            background: var(--supporting);
+        }
+
+        .legend-dot.highlighted {
+            background: var(--highlight);
+        }
+
+        .legend-dot.connected {
+            background: var(--warm);
+        }
+
+        .legend-line {
+            width: 20px;
+            height: 2px;
+            background: #ccc;
+        }
+
+        /* Filter info box */
+        .filter-info {
+            background: var(--accent-light);
+            border: 1px solid var(--accent);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            display: none;
+        }
+
+        .filter-info.active {
+            display: block;
+        }
+
+        .filter-info-title {
+            font-weight: 600;
+            font-size: 0.85rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .filter-info-text {
+            font-size: 0.8rem;
+            color: var(--ink);
+            line-height: 1.5;
+        }
+
+        /* Export */
+        .export-section {
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border);
+        }
+
+        .export-btn {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background: var(--warm);
+            color: white;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .export-btn:hover {
+            background: #725f47;
+        }
+
+        .export-status {
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-align: center;
+            margin-top: 0.5rem;
+            min-height: 1.2em;
+        }
+
+        /* Responsive */
+        @media (max-width: 900px) {
+            .main-content {
+                grid-template-columns: 1fr;
+            }
+
+            .detail-panel {
+                position: static;
+            }
+
+            #network {
+                height: 450px;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+
+            .controls-container {
+                align-items: flex-start;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <div class="container">
+        <div class="header-content">
+            <div class="header-left">
+                <img src="stephanie_photo.jpg" alt="Stephanie Hamel" class="header-photo">
+                <div>
+                    <h1>Knowledge Network</h1>
+                    <p class="subtitle">Search to find where our expertise overlaps</p>
+                </div>
+            </div>
+            <div class="controls-container">
+                <div class="search-container">
+                    <input type="text" class="search-input" id="searchInput" placeholder="Search: climate, AI, nonprofit...">
+                    <button class="clear-btn" id="clearBtn">Clear</button>
+                </div>
+                <div class="toggle-container">
+                    <span class="toggle-label">Show Kincraft relevance</span>
+                    <div class="toggle-switch" id="relevanceToggle"></div>
+                    <span class="toggle-status" id="toggleStatus"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<div class="container">
+    <div class="main-content">
+        <div class="network-container">
+            <svg id="network"></svg>
+            <div class="network-instructions">Click a node to explore • Drag to rearrange • Search to highlight • Toggle to filter</div>
+        </div>
+
+        <div class="detail-panel">
+            <div class="filter-info" id="filterInfo">
+                <p class="filter-info-title">🎯 Showing Core Kincraft Domains</p>
+                <p class="filter-info-text">These 10 domains directly inform what we're building: a mission-locked Public Benefit Corporation addressing climate change through cultural preservation, global networks, and maker capacity building.</p>
+            </div>
+
+            <div class="detail-empty" id="detailEmpty">
+                <div class="detail-empty-icon">◉</div>
+                <p>Click a node or search<br>to explore knowledge domains</p>
+            </div>
+
+            <div class="detail-content" id="detailContent">
+                <div class="detail-header">
+                    <p class="detail-label">Knowledge Domain</p>
+                    <span class="core-badge" id="coreBadge">Core to Kincraft</span>
+                </div>
+                <h2 class="detail-title" id="detailTitle"></h2>
+
+                <div class="detail-section">
+                    <p class="detail-section-title">What I Understand</p>
+                    <p class="detail-text" id="detailUnderstand"></p>
+                </div>
+
+                <div class="detail-section">
+                    <p class="detail-section-title">→ Kincraft Connection</p>
+                    <p class="detail-kincraft" id="detailKincraft"></p>
+                </div>
+
+                <div class="detail-section">
+                    <p class="detail-section-title">Let's Connect If...</p>
+                    <p class="detail-collab" id="detailCollab"></p>
+                </div>
+
+                <div class="detail-section">
+                    <p class="detail-section-title">Connected Domains</p>
+                    <div class="connected-nodes" id="connectedNodes"></div>
+                </div>
+
+                <div class="detail-section export-section">
+                    <button class="export-btn" id="exportBtn">📋 Copy Collaboration Summary</button>
+                    <p class="export-status" id="exportStatus"></p>
+                </div>
+            </div>
+
+            <div class="legend">
+                <p class="legend-title">Legend</p>
+                <div class="legend-item"><span class="legend-dot core"></span> Core to Kincraft</div>
+                <div class="legend-item"><span class="legend-dot supporting"></span> Supporting expertise</div>
+                <div class="legend-item"><span class="legend-dot highlighted"></span> Search match</div>
+                <div class="legend-item"><span class="legend-dot connected"></span> Connected to selection</div>
+                <div class="legend-item"><span class="legend-line"></span> Domains that reinforce each other</div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+// Knowledge domain data with Kincraft relevance
+const nodes = [
+    {
+        id: "org-comm",
+        name: "Organizational Communication",
+        understand: "How organizations communicate internally and externally. How they change, adapt, and fail to adapt. The gap between what institutions say and what they do. Academic path: BA in Journalism, MA in Human Communication, PhD in Organizational Communication.",
+        kincraft: "Building a Public Benefit Corporation (PBC) where mission is legally locked to amplify cultural preservation and climate initiatives.",
+        collab: "You study organizational change, mission-driven structures, or benefit corporations.",
+        keywords: ["organization", "communication", "institutional", "change", "corporate", "mission", "pbc", "benefit corporation", "public benefit", "journalism", "media", "strategic communication"],
+        coreToKincraft: true
+    },
+    {
+        id: "crisis",
+        name: "Crisis & Community Resilience",
+        understand: "How communities respond to systemic stress—wildfires, pandemics, health system failures. What makes some communities bounce back while others don't. Artisan communities preserve land-based knowledge essential for climate adaptation.",
+        kincraft: "Artisan communities are on the front lines of climate change. Kincraft's Cultural Regeneration Fund prioritizes their resilience, land stewardship, and climate adaptation.",
+        collab: "You work on community resilience, climate adaptation, land stewardship, or disaster recovery.",
+        keywords: ["crisis", "resilience", "disaster", "community", "wildfire", "pandemic", "recovery", "climate", "climate change", "adaptation", "land", "land stewardship", "artisan", "natural intelligence"],
+        coreToKincraft: true
+    },
+    {
+        id: "nonprofit",
+        name: "Nonprofit Sector Health",
+        understand: "What makes the nonprofit sector sustainable—or fragile. Volunteerism, managed care impacts, and how mission-driven organizations maintain health over time.",
+        kincraft: "Kincraft partners with cultural nonprofits and artisan collectives. Understanding sector health shapes how we structure those relationships.",
+        collab: "You research or lead mission-driven organizations.",
+        keywords: ["nonprofit", "volunteer", "mission", "health", "sector", "ngo", "charity", "foundation"],
+        coreToKincraft: false
+    },
+    {
+        id: "futures",
+        name: "Futures Thinking & Foresight",
+        understand: "Signals analysis, scenario planning, and how to make decisions for conditions that don't yet exist. Trained through Stanford and the Institute for the Future (IFTF).",
+        kincraft: "We're bringing futures thinking tools and forecasting tools to makers and designers.",
+        collab: "You're building foresight tools or teaching futures methods.",
+        keywords: ["futures", "foresight", "scenario", "planning", "trends", "signals", "forecast", "iftf", "stanford", "climate", "climate change"],
+        coreToKincraft: true
+    },
+    {
+        id: "design",
+        name: "Human-Centered Design",
+        understand: "Stanford d.school methodology. UX/UI principles. Participatory research that centers the people being designed for, not just the designers.",
+        kincraft: "Every Kincraft feature starts with maker needs. Pattern Passport emerged from asking: what do makers actually want to know about heritage?",
+        collab: "You practice design thinking or UX research, especially in social impact.",
+        keywords: ["design", "ux", "ui", "user", "human-centered", "d.school", "stanford", "participatory", "experience"],
+        coreToKincraft: true
+    },
+    {
+        id: "civic",
+        name: "Civic Capacity Building",
+        understand: "What it means to live a civically engaged life. How to build systems that create engaged citizens at scale—not just inform them, but activate them.",
+        kincraft: "Kincraft's mission test: \"Does this make makers more capable of affecting the change they want to see?\" Building capacity for climate action through craft.",
+        collab: "You build civic infrastructure, study political participation, or work on climate mobilization.",
+        keywords: ["civic", "engagement", "citizen", "democracy", "activism", "participation", "voting", "community", "climate", "climate action"],
+        coreToKincraft: true
+    },
+    {
+        id: "heritage",
+        name: "Cultural Heritage & Attribution",
+        understand: "Indigenous protocols. Postcolonial reflexivity. The difference between appreciation and appropriation. How to represent cultural knowledge with consent and respect. Artisan craft traditions are tied to the land—natural intelligence passed down through generations.",
+        kincraft: "We are building Kincraft to provide cultural attribution, land acknowledgment, and climate data for land stewardship for every design—connecting makers to artisan communities and heritage traditions as well as climate data and initiatives near them.",
+        collab: "You work on cultural preservation, indigenous rights, land stewardship, or ethical representation.",
+        keywords: ["culture", "heritage", "indigenous", "attribution", "appropriation", "tradition", "artisan", "postcolonial", "land", "climate", "stewardship", "land acknowledgement", "land acknowledgment", "land stewardship", "natural intelligence", "craft traditions", "regenerative"],
+        coreToKincraft: true
+    },
+    {
+        id: "methods",
+        name: "Qualitative & Feminist Methods",
+        understand: "Online interviewing methodology. Reflexivity in research. How to give voice to people typically excluded from research processes. Consulted with World Pulse (190+ countries) on transnational feminist network impact frameworks.",
+        kincraft: "User research for Kincraft follows these principles—centering maker voices, not just our assumptions about what makers need.",
+        collab: "You develop research methods, study voice/representation in research, or work with transnational feminist networks.",
+        keywords: ["qualitative", "feminist", "research", "methods", "interview", "voice", "reflexivity", "gender", "women", "world pulse", "transnational"],
+        coreToKincraft: false
+    },
+    {
+        id: "tech",
+        name: "Technology & Society",
+        understand: "AI ethics and safety. Women's barriers in tech. How technology reshapes work, identity, and power. The difference between tech that extracts and tech that regenerates. Gold standards for child safety baked in before the build begins.",
+        kincraft: "Kincraft is explicitly non-extractive—we don't optimize for engagement, we don't use dark patterns, we measure offline connection. Mission-locked as a Public Benefit Corporation.",
+        collab: "You work on ethical tech, responsible AI, benefit corporations, or tech policy.",
+        keywords: ["technology", "ai", "ethics", "safety", "women", "tech", "digital", "child", "responsible", "artificial intelligence", "pbc", "benefit corporation", "regenerative", "gender"],
+        coreToKincraft: true
+    },
+    {
+        id: "innovation",
+        name: "Innovation Ecosystems",
+        understand: "How business incubators work. Knowledge work and creativity. What environments foster innovation—and what kills it.",
+        kincraft: "We are building infrastructure for a maker ecosystem—not just an app, but tools, education, and community that reinforce each other.",
+        collab: "You study or build innovation infrastructure, especially outside traditional tech hubs.",
+        keywords: ["innovation", "incubator", "startup", "ecosystem", "creativity", "entrepreneurship", "business"],
+        coreToKincraft: true
+    },
+    {
+        id: "policy",
+        name: "Policy & Inclusive Design",
+        understand: "How to center excluded voices in policy processes. Research design that surfaces what decision-makers miss. Presenting findings to power.",
+        kincraft: "EdTech partnerships will bring Kincraft into schools—navigating education policy and curriculum standards while building to the gold standard for child safety, security, and offline motivation.",
+        collab: "You work on education policy or inclusive policy design.",
+        keywords: ["policy", "education", "edtech", "inclusive", "school", "curriculum", "government"],
+        coreToKincraft: false
+    },
+    {
+        id: "generations",
+        name: "Generational Dynamics",
+        understand: "How parenting, education, and technology shape each generation's approach to dissent, leadership, and change. What motivates Gen Z differently.",
+        kincraft: "Kincraft is built for Gen Z makers who want meaning beyond consumption—tools to create the world they want to live in.",
+        collab: "You study generational change or build for younger audiences with depth.",
+        keywords: ["generation", "genz", "millennial", "youth", "young", "dissent", "leadership"],
+        coreToKincraft: false
+    },
+    {
+        id: "global",
+        name: "Global Social Change",
+        understand: "Transnational feminist networks and how movements scale across borders. Consulted with World Pulse (190+ countries) to architect their theory of change and impact framework. Published research on postcolonial reflexivity in organizational practice.",
+        kincraft: "Kincraft connects makers globally to heritage traditions across borders. The Cultural Regeneration Fund supports artisan communities worldwide.",
+        collab: "You work on global movements, transnational networks, or international development with a gender lens.",
+        keywords: ["global", "transnational", "feminist", "gender", "women", "world pulse", "international", "movement", "social change"],
+        coreToKincraft: true
+    }
+];
+
+// Define connections between domains (edges)
+const links = [
+    { source: "org-comm", target: "nonprofit" },
+    { source: "org-comm", target: "crisis" },
+    { source: "org-comm", target: "innovation" },
+    { source: "org-comm", target: "tech" },
+    { source: "crisis", target: "nonprofit" },
+    { source: "crisis", target: "civic" },
+    { source: "crisis", target: "heritage" },
+    { source: "crisis", target: "futures" },
+    { source: "nonprofit", target: "civic" },
+    { source: "futures", target: "innovation" },
+    { source: "futures", target: "tech" },
+    { source: "futures", target: "design" },
+    { source: "futures", target: "civic" },
+    { source: "design", target: "methods" },
+    { source: "design", target: "policy" },
+    { source: "design", target: "tech" },
+    { source: "civic", target: "policy" },
+    { source: "civic", target: "generations" },
+    { source: "civic", target: "heritage" },
+    { source: "heritage", target: "tech" },
+    { source: "heritage", target: "methods" },
+    { source: "heritage", target: "policy" },
+    { source: "methods", target: "policy" },
+    { source: "tech", target: "innovation" },
+    { source: "tech", target: "generations" },
+    { source: "innovation", target: "policy" },
+    { source: "global", target: "methods" },
+    { source: "global", target: "heritage" },
+    { source: "global", target: "civic" },
+    { source: "global", target: "nonprofit" }
+];
+
+// State
+let showCoreOnly = false;
+
+// D3 visualization
+const svg = d3.select("#network");
+const container = document.querySelector(".network-container");
+const width = container.clientWidth;
+const height = 600;
+
+svg.attr("viewBox", [0, 0, width, height]);
+
+// Create force simulation
+const simulation = d3.forceSimulation(nodes)
+    .force("link", d3.forceLink(links).id(d => d.id).distance(120))
+    .force("charge", d3.forceManyBody().strength(-400))
+    .force("center", d3.forceCenter(width / 2, height / 2))
+    .force("collision", d3.forceCollide().radius(50));
+
+// Create links
+const link = svg.append("g")
+    .attr("class", "links")
+    .selectAll("line")
+    .data(links)
+    .join("line")
+    .attr("stroke", "#ddd")
+    .attr("stroke-width", 2);
+
+// Create nodes
+const node = svg.append("g")
+    .attr("class", "nodes")
+    .selectAll("g")
+    .data(nodes)
+    .join("g")
+    .attr("cursor", "pointer")
+    .call(d3.drag()
+        .on("start", dragstarted)
+        .on("drag", dragged)
+        .on("end", dragended));
+
+// Node circles
+node.append("circle")
+    .attr("r", 28)
+    .attr("fill", d => d.coreToKincraft ? "#2d5a45" : "#a8c5b8")
+    .attr("stroke", "#fff")
+    .attr("stroke-width", 2);
+
+// Node labels
+node.append("text")
+    .text(d => d.name.split(" ")[0])
+    .attr("text-anchor", "middle")
+    .attr("dy", "0.35em")
+    .attr("fill", "white")
+    .attr("font-size", "10px")
+    .attr("font-weight", "500")
+    .attr("pointer-events", "none");
+
+// Tick function
+simulation.on("tick", () => {
+    link
+        .attr("x1", d => d.source.x)
+        .attr("y1", d => d.source.y)
+        .attr("x2", d => d.target.x)
+        .attr("y2", d => d.target.y);
+
+    node.attr("transform", d => `translate(${d.x},${d.y})`);
+});
+
+// Drag functions
+function dragstarted(event, d) {
+    if (!event.active) simulation.alphaTarget(0.3).restart();
+    d.fx = d.x;
+    d.fy = d.y;
+}
+
+function dragged(event, d) {
+    d.fx = event.x;
+    d.fy = event.y;
+}
+
+function dragended(event, d) {
+    if (!event.active) simulation.alphaTarget(0);
+    d.fx = null;
+    d.fy = null;
+}
+
+// Click handler
+node.on("click", (event, d) => {
+    selectNode(d);
+});
+
+// Get connected nodes
+function getConnectedNodes(nodeId) {
+    const connected = [];
+    links.forEach(link => {
+        if (link.source.id === nodeId) connected.push(link.target.id);
+        if (link.target.id === nodeId) connected.push(link.source.id);
+    });
+    return connected;
+}
+
+// Select and highlight a node
+function selectNode(d) {
+    const connectedIds = getConnectedNodes(d.id);
+
+    // Reset all nodes and links
+    node.select("circle")
+        .attr("fill", n => {
+            if (n.id === d.id) return "#e85d04";
+            if (connectedIds.includes(n.id)) return "#8b7355";
+            if (showCoreOnly && !n.coreToKincraft) return "#ddd";
+            return n.coreToKincraft ? "#2d5a45" : "#a8c5b8";
+        })
+        .attr("r", n => n.id === d.id ? 35 : 28)
+        .attr("opacity", n => {
+            if (showCoreOnly && !n.coreToKincraft && n.id !== d.id && !connectedIds.includes(n.id)) return 0.3;
+            return 1;
+        });
+
+    link
+        .attr("stroke", l => {
+            if (l.source.id === d.id || l.target.id === d.id) return "#8b7355";
+            return "#ddd";
+        })
+        .attr("stroke-width", l => {
+            if (l.source.id === d.id || l.target.id === d.id) return 3;
+            return 2;
+        });
+
+    // Update detail panel
+    document.getElementById("detailEmpty").style.display = "none";
+    document.getElementById("detailContent").classList.add("active");
+    document.getElementById("detailTitle").textContent = d.name;
+    document.getElementById("detailUnderstand").textContent = d.understand;
+    document.getElementById("detailKincraft").textContent = d.kincraft;
+    document.getElementById("detailCollab").textContent = d.collab;
+    
+    // Show/hide core badge
+    document.getElementById("coreBadge").style.display = d.coreToKincraft ? "inline-block" : "none";
+
+    // Connected nodes
+    const connectedContainer = document.getElementById("connectedNodes");
+    connectedContainer.innerHTML = "";
+    connectedIds.forEach(id => {
+        const connectedNode = nodes.find(n => n.id === id);
+        const tag = document.createElement("span");
+        tag.className = connectedNode.coreToKincraft ? "connected-tag core" : "connected-tag";
+        tag.textContent = connectedNode.name;
+        tag.onclick = () => selectNode(connectedNode);
+        connectedContainer.appendChild(tag);
+    });
+}
+
+// Toggle functionality
+const relevanceToggle = document.getElementById("relevanceToggle");
+const toggleStatus = document.getElementById("toggleStatus");
+const filterInfo = document.getElementById("filterInfo");
+
+function updateToggleState() {
+    if (showCoreOnly) {
+        relevanceToggle.classList.add("active");
+        toggleStatus.textContent = "Core domains";
+        filterInfo.classList.add("active");
+        
+        // Dim non-core nodes
+        node.select("circle")
+            .attr("fill", d => d.coreToKincraft ? "#2d5a45" : "#ddd")
+            .attr("opacity", d => d.coreToKincraft ? 1 : 0.3);
+        
+        node.select("text")
+            .attr("opacity", d => d.coreToKincraft ? 1 : 0.3);
+        
+        // Dim links to non-core nodes
+        link
+            .attr("stroke", l => {
+                if (l.source.coreToKincraft && l.target.coreToKincraft) return "#2d5a45";
+                return "#eee";
+            })
+            .attr("stroke-width", l => {
+                if (l.source.coreToKincraft && l.target.coreToKincraft) return 2;
+                return 1;
+            })
+            .attr("opacity", l => {
+                if (l.source.coreToKincraft && l.target.coreToKincraft) return 1;
+                return 0.3;
+            });
+    } else {
+        relevanceToggle.classList.remove("active");
+        toggleStatus.textContent = "All domains";
+        filterInfo.classList.remove("active");
+        
+        // Reset all nodes
+        node.select("circle")
+            .attr("fill", d => d.coreToKincraft ? "#2d5a45" : "#a8c5b8")
+            .attr("opacity", 1);
+        
+        node.select("text")
+            .attr("opacity", 1);
+        
+        // Reset all links
+        link
+            .attr("stroke", "#ddd")
+            .attr("stroke-width", 2)
+            .attr("opacity", 1);
+    }
+}
+
+relevanceToggle.addEventListener("click", () => {
+    showCoreOnly = !showCoreOnly;
+    updateToggleState();
+});
+
+// Initialize toggle state
+updateToggleState();
+
+// Search functionality
+const searchInput = document.getElementById("searchInput");
+const clearBtn = document.getElementById("clearBtn");
+
+searchInput.addEventListener("input", (e) => {
+    const query = e.target.value.toLowerCase().trim();
+    
+    if (!query) {
+        updateToggleState(); // Reset to current toggle state
+        return;
+    }
+
+    // Find matching nodes
+    const matchingNodes = nodes.filter(n => 
+        n.keywords.some(k => k.includes(query)) ||
+        n.name.toLowerCase().includes(query)
+    );
+
+    if (matchingNodes.length > 0) {
+        // Highlight matches
+        const matchingIds = matchingNodes.map(n => n.id);
+        const allConnected = new Set();
+        matchingIds.forEach(id => {
+            getConnectedNodes(id).forEach(c => allConnected.add(c));
+        });
+
+        node.select("circle")
+            .attr("fill", n => {
+                if (matchingIds.includes(n.id)) return "#e85d04";
+                if (allConnected.has(n.id)) return "#8b7355";
+                return "#ccc";
+            })
+            .attr("opacity", n => {
+                if (matchingIds.includes(n.id) || allConnected.has(n.id)) return 1;
+                return 0.3;
+            })
+            .attr("r", n => matchingIds.includes(n.id) ? 35 : 28);
+
+        node.select("text")
+            .attr("opacity", n => {
+                if (matchingIds.includes(n.id) || allConnected.has(n.id)) return 1;
+                return 0.3;
+            });
+
+        link
+            .attr("stroke", l => {
+                if (matchingIds.includes(l.source.id) || matchingIds.includes(l.target.id)) return "#8b7355";
+                return "#eee";
+            })
+            .attr("stroke-width", l => {
+                if (matchingIds.includes(l.source.id) || matchingIds.includes(l.target.id)) return 3;
+                return 1;
+            })
+            .attr("opacity", l => {
+                if (matchingIds.includes(l.source.id) || matchingIds.includes(l.target.id)) return 1;
+                return 0.3;
+            });
+
+        // If single match, show details
+        if (matchingNodes.length === 1) {
+            selectNode(matchingNodes[0]);
+        }
+    } else {
+        // No matches - dim everything
+        node.select("circle").attr("fill", "#ccc").attr("r", 28).attr("opacity", 0.3);
+        node.select("text").attr("opacity", 0.3);
+        link.attr("stroke", "#eee").attr("stroke-width", 1).attr("opacity", 0.3);
+    }
+});
+
+clearBtn.addEventListener("click", () => {
+    searchInput.value = "";
+    updateToggleState();
+    document.getElementById("detailEmpty").style.display = "block";
+    document.getElementById("detailContent").classList.remove("active");
+});
+
+// Handle window resize
+window.addEventListener("resize", () => {
+    const newWidth = container.clientWidth;
+    svg.attr("viewBox", [0, 0, newWidth, height]);
+    simulation.force("center", d3.forceCenter(newWidth / 2, height / 2));
+    simulation.alpha(0.3).restart();
+});
+
+// Export functionality
+let currentSelectedNode = null;
+
+// Update selectNode to track current selection
+const originalSelectNode = selectNode;
+selectNode = function(d) {
+    currentSelectedNode = d;
+    originalSelectNode(d);
+};
+
+document.getElementById("exportBtn").addEventListener("click", () => {
+    if (!currentSelectedNode) {
+        document.getElementById("exportStatus").textContent = "Select a domain first";
+        return;
+    }
+
+    const d = currentSelectedNode;
+    const connectedIds = getConnectedNodes(d.id);
+    const connectedNames = connectedIds.map(id => nodes.find(n => n.id === id).name);
+    
+    const summary = `COLLABORATION OPPORTUNITY
+
+Domain: ${d.name}
+${d.coreToKincraft ? "⭐ Core to Kincraft\n" : ""}
+What Stephanie Understands:
+${d.understand}
+
+Kincraft Connection:
+${d.kincraft}
+
+Let's Connect If:
+${d.collab}
+
+Related Expertise:
+${connectedNames.join(", ")}
+
+---
+Stephanie Hamel | Founder & CEO, Kincraft
+linkedin.com/in/stephaniehameltellsdatastories
+Crafting the future. One maker at a time.`;
+
+    navigator.clipboard.writeText(summary).then(() => {
+        document.getElementById("exportStatus").textContent = "✓ Copied to clipboard!";
+        setTimeout(() => {
+            document.getElementById("exportStatus").textContent = "";
+        }, 3000);
+    }).catch(err => {
+        document.getElementById("exportStatus").textContent = "Copy failed - try again";
+    });
+});
+</script>
+
+</body>
+</html>
